@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,6 +18,18 @@ public class UserController {
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers(){
+
+        List<User> userList = userService.getUserList();
+
+        if (!userList.isEmpty()){
+            return ResponseEntity.ok(userList);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/user")
@@ -43,5 +56,10 @@ public class UserController {
     @PostMapping("/user/add")
     public ResponseEntity<String> addUser(@RequestBody User user){
         return userService.addUser(user);
+    }
+
+    @PutMapping("/user/update")
+    public ResponseEntity<String> updateUser(@RequestBody User user){
+        return userService.updateUser(user);
     }
 }

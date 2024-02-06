@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,7 @@ public class UserService {
     /**
      *
      * @param id - integer representing a user id
-     * @return returns a optional filled with a user or empty optional
+     * @return returns an optional filled with a user or empty optional
      */
     public Optional<User> getUser(Integer id){
 
@@ -76,6 +77,30 @@ public class UserService {
     }
 
     /**
+     *
+     * @param user - user to update
+     * @return ResponseEntity representing good or bad request
+     */
+    public ResponseEntity<String> updateUser(User user){
+
+        //make sure user does not exist
+        if (userExists(user.get_id())){
+
+            updateUserFields(user);
+
+            return ResponseEntity.ok("User updated successfully");
+
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to update specified user - id dne");
+        }
+
+    }
+
+    public List<User> getUserList(){
+        return userList;
+    }
+
+    /**
      * Helper Section
      */
 
@@ -95,6 +120,29 @@ public class UserService {
         }
 
         return existsFlag;
+    }
+
+    /**
+     *
+     * @param src_user - user object with updated fields
+     */
+    private void updateUserFields(User src_user){
+
+        //loop users
+        for (int i = 0; i < userList.size(); i++){
+
+            //curr user
+            User currentUser = userList.get(i);
+
+            //set fields if id matches
+            if (currentUser.get_id() == src_user.get_id()){
+                currentUser.set_age(src_user.get_age());
+                currentUser.set_email(src_user.get_email());
+                currentUser.set_last_name(src_user.get_last_name());
+                currentUser.set_first_name(src_user.get_first_name());
+            }
+        }
+
     }
 
 }
