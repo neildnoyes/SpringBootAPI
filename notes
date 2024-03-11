@@ -1,0 +1,25 @@
+Spring
+    - web application framework based on Java
+
+Spring Boot
+    - a module of spring
+
+What is Spring Boot?
+    - a spring module which aims to simplify the use of the
+    spring framework for Java development
+
+    - standalone spring based application
+
+    - comes with auto dependency resolution,
+    embedded http servers, auto configuration, management endpoints
+    and spring boot CLI
+
+Advantages of Spring boot?
+    - provides autoconfiguration to load a set of default config for quick start
+    of application
+    - creates stand alone applications with a range of non functional features common
+    to large classes of project
+    - embedded tomcat, servlet containers jetty to avoid WAR files
+
+Few Features of Spring Boot?
+    - CLI - 

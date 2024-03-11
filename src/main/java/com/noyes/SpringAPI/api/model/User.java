@@ -1,70 +1,81 @@
 package com.noyes.SpringAPI.api.model;
 
+import jakarta.persistence.*;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 
+@Entity
+@Table(name = "tbl_User")
 public class User {
 
     /**
      * User properties
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String first_name;
-    private String last_name;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "age")
     private int age;
+    @Column(name = "email")
     private String email;
 
 
     /**
-     * User constructor
+     * User constructors
      */
-    public User(int id, String first_name, String last_name, int age, String email){
+    public User(){}
+    public User(int id, String firstName, String lastName, int age, String email){
         this.id = id;
         this.age = age;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
     }
 
     /**
      * User getters & setters
      */
-    public int get_id() {
+    public int getId() {
         return id;
     }
 
-    public void set_id(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public int get_age() {
+    public int getAge() {
         return age;
     }
 
-    public void set_age(int age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public String get_email() {
+    public String getEmail() {
         return email;
     }
 
-    public void set_email(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String get_first_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void set_first_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String first_name) {
+        this.firstName = first_name;
     }
 
-    public String get_last_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void set_last_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String last_name) {
+        this.lastName = last_name;
     }
 
 }

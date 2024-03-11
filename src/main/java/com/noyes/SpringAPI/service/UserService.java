@@ -1,6 +1,8 @@
 package com.noyes.SpringAPI.service;
 
 import com.noyes.SpringAPI.api.model.User;
+import com.noyes.SpringAPI.api.model.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,21 +21,14 @@ public class UserService {
      */
     private List<User> userList;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     /**
      * UserService constructor
      */
-    public UserService() {
-        userList = new ArrayList<>();
-
-        User user1 = new User(1, "Neil", "Noyes", 25, "neilnoyessss@gmail.com");
-        User user2 = new User(2, "Eric", "Noyes", 35, "ericnoyes@gmail.com");
-        User user3 = new User(3, "Avery", "Noyes", 32, "averynoyes@gmail.com");
-        User user4 = new User(4, "Kim", "Noyes", 67, "knoyes@gmail.com");
-        User user5 = new User(5, "Geralyn", "Noyes", 59, "gnoyes@gmail.com");
-
-        userList.addAll(Arrays.asList(user1, user2, user3, user4, user5));
-    }
+    public UserService() {}
 
     /**
      *
@@ -42,16 +37,7 @@ public class UserService {
      */
     public Optional<User> getUser(Integer id){
 
-        Optional optional = Optional.empty();
-
-        for (User user : userList){
-            if (id == user.get_id()){
-                optional = Optional.of(user);
-                return optional;
-            }
-        }
-
-        return optional;
+        return userRepository.findById(id);
 
     }
 
@@ -63,16 +49,12 @@ public class UserService {
     public ResponseEntity<String> addUser(User user){
 
         //make sure user does not exist
-        if (!userExists(user.get_id())){
-
-            //add user
-            userList.add(user);
-
-            return ResponseEntity.ok("User added successfully");
-
-        }else{
+        if (userRepository.existsById(user.getId())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to add specified user - id exists");
         }
+
+        userRepository.save(user);
+        return ResponseEntity.ok("User added successfully");
 
     }
 
@@ -84,20 +66,41 @@ public class UserService {
     public ResponseEntity<String> updateUser(User user){
 
         //make sure user does not exist
-        if (userExists(user.get_id())){
-
-            updateUserFields(user);
-
-            return ResponseEntity.ok("User updated successfully");
-
-        }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to update specified user - id dne");
+        if (!userRepository.existsById(user.getId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to update specified user - id does not exist");
         }
+        userRepository.save(user);
+        return ResponseEntity.ok("User updated successfully");
 
     }
 
+    /**
+     *
+     * @param id - user id to delete
+     * @return ResponseEntity representing good or bad request
+     */
+    public ResponseEntity<String> deleteUser(Integer id) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+
+            userRepository.deleteById(id);
+            return ResponseEntity.ok("User deleted successfully");
+
+        } else {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+
+        }
+    }
+
+    /**
+     *
+     * @return List of all Users in tbl_user
+     */
     public List<User> getUserList(){
-        return userList;
+        return userRepository.findAll();
     }
 
     /**
@@ -114,7 +117,7 @@ public class UserService {
         boolean existsFlag = false;
 
         for (User user : userList){
-            if (user.get_id() == id){
+            if (user.getId() == id){
                 existsFlag = true;
             }
         }
@@ -135,11 +138,11 @@ public class UserService {
             User currentUser = userList.get(i);
 
             //set fields if id matches
-            if (currentUser.get_id() == src_user.get_id()){
-                currentUser.set_age(src_user.get_age());
-                currentUser.set_email(src_user.get_email());
-                currentUser.set_last_name(src_user.get_last_name());
-                currentUser.set_first_name(src_user.get_first_name());
+            if (currentUser.getId() == src_user.getId()){
+                currentUser.setAge(src_user.getAge());
+                currentUser.setEmail(src_user.getEmail());
+                currentUser.setLastName(src_user.getLastName());
+                currentUser.setFirstName(src_user.getFirstName());
             }
         }
 
